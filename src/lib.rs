@@ -2,13 +2,7 @@ use rsomics_common::{Result, RsomicsError};
 use std::collections::HashSet;
 use std::io::{BufRead, BufWriter, Write};
 
-/// Remove duplicate BED intervals, keeping the first occurrence.
-///
-/// Two records are considered duplicates when their first three fields
-/// (chrom, start, end) are identical. Extra columns are preserved on the
-/// kept record. Comment and blank lines are passed through unchanged.
-///
-/// Returns `(total_records, kept_records)`.
+/// Deduplicate on (chrom, start, end); keep first occurrence. Returns (total, kept).
 pub fn unique<R: BufRead, W: Write>(reader: R, output: W) -> Result<(u64, u64)> {
     let mut out = BufWriter::with_capacity(64 * 1024, output);
     let mut seen: HashSet<String> = HashSet::new();
